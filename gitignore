@@ -1,0 +1,6 @@
+# 系统/编辑器
+Thumbs.db
+.DS_Store
+*.log
+.vscode/
+.idea/
