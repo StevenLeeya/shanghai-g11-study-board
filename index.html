@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>沪上高二学习作战板</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="hero">
+        <div class="hero__text">
+          <p class="eyebrow">For Shanghai Grade 11 Students</p>
+          <h1>沪上高二学习作战板</h1>
+          <p class="hero__description">
+            把晚自习、回家时间和阶段考试压力，转换成一张真正能执行的学习计划。
+          </p>
+          <div class="hero__actions">
+            <button id="generatePlanBtn" class="button button--primary">刷新今晚学习内容</button>
+            <button id="resetDataBtn" class="button button--ghost">恢复默认样板</button>
+          </div>
+        </div>
+        <div class="hero__stats">
+          <article class="stat-card accent-blue">
+            <span>距离期中考试</span>
+            <strong id="daysToExam">28 天</strong>
+            <small>用倒计时强化紧迫感</small>
+          </article>
+          <article class="stat-card accent-pink">
+            <span>今晚可用时长</span>
+            <strong id="availableHours">2.0 h</strong>
+            <small>按 21:00 - 23:00 节奏规划</small>
+          </article>
+          <article class="stat-card accent-gold">
+            <span>当前优势科目</span>
+            <strong id="bestSubject">英语</strong>
+            <small>维持手感，不要失分</small>
+          </article>
+        </div>
+      </header>
+
+      <main class="dashboard">
+        <section class="panel panel--wide">
+          <div class="panel__header">
+            <div>
+              <p class="panel__eyebrow">Step 1</p>
+              <h2>学情输入</h2>
+            </div>
+            <p class="panel__hint">调整到你最近一周的真实状态，计划会同步更新。</p>
+          </div>
+
+          <div class="input-grid">
+            <label class="field">
+              <span>期中考试倒计时（天）</span>
+              <input id="examDaysInput" type="range" min="7" max="90" value="28" />
+              <strong id="examDaysValue">28 天</strong>
+            </label>
+            <label class="field">
+              <span>放学到睡前可学习时间</span>
+              <input id="availableMinutesInput" type="range" min="60" max="180" step="15" value="120" />
+              <strong id="availableMinutesValue">120 分钟</strong>
+            </label>
+            <label class="field">
+              <span>今晚精力值</span>
+              <input id="energyInput" type="range" min="1" max="10" value="7" />
+              <strong id="energyValue">7 / 10</strong>
+            </label>
+            <label class="field">
+              <span>学校作业负担</span>
+              <input id="homeworkLoadInput" type="range" min="1" max="10" value="6" />
+              <strong id="homeworkLoadValue">6 / 10</strong>
+            </label>
+            <label class="field">
+              <span>当前进度</span>
+              <select id="progressStageSelect">
+                <option value="high2_fall">高二上同步</option>
+                <option value="high2_spring">高二下同步</option>
+                <option value="accelerated">略快一档</option>
+              </select>
+              <strong id="progressStageValue">高二上同步</strong>
+            </label>
+            <label class="field">
+              <span>生成模式</span>
+              <select id="generationModeSelect">
+                <option value="sync">校内同步</option>
+                <option value="advance">超前半步</option>
+                <option value="sprint">阶段冲刺</option>
+              </select>
+              <strong id="generationModeValue">校内同步</strong>
+            </label>
+          </div>
+        </section>
+
+        <section class="panel panel--wide">
+          <div class="panel__header">
+            <div>
+              <p class="panel__eyebrow">Step 2</p>
+              <h2>科目作战画像</h2>
+            </div>
+            <p class="panel__hint">每门课同时看“当前水平”和“目标分”，让优先级更真实。</p>
+          </div>
+          <div id="subjectCards" class="subject-grid"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel__header">
+            <div>
+              <p class="panel__eyebrow">Step 3</p>
+              <h2>本周策略</h2>
+            </div>
+            <p class="panel__hint">根据你的短板、精力和临考压力实时生成。</p>
+          </div>
+          <div id="weeklyFocus" class="strategy-list"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel__header">
+            <div>
+              <p class="panel__eyebrow">Step 4</p>
+              <h2>今晚学习安排</h2>
+            </div>
+            <p class="panel__hint">按 21:00 放学、23:00 睡觉压缩成更真实的夜间节奏。</p>
+          </div>
+          <div id="scheduleSummary" class="summary-card"></div>
+          <div id="scheduleTimeline" class="timeline"></div>
+        </section>
+
+        <section class="panel panel--wide">
+          <div class="panel__header">
+            <div>
+              <p class="panel__eyebrow">Step 5</p>
+              <h2>今晚具体学习内容</h2>
+            </div>
+            <p class="panel__hint">按常见上海高二进度模板生成模块、任务清单、输出物和可跳转题源。</p>
+          </div>
+          <div id="contentSummary" class="summary-card"></div>
+          <div id="contentCards" class="content-grid"></div>
+        </section>
+      </main>
+    </div>
+
+    <template id="subjectCardTemplate">
+      <article class="subject-card">
+        <div class="subject-card__header">
+          <div>
+            <h3 class="subject-name"></h3>
+            <p class="subject-tagline"></p>
+          </div>
+          <span class="subject-priority"></span>
+        </div>
+
+        <div class="score-row">
+          <label>
+            <span>当前水平</span>
+            <input class="current-score" type="range" min="60" max="150" />
+            <strong class="current-score-value"></strong>
+          </label>
+          <label>
+            <span>目标分</span>
+            <input class="target-score" type="range" min="70" max="150" />
+            <strong class="target-score-value"></strong>
+          </label>
+        </div>
+
+        <div class="metrics">
+          <div>
+            <span>提分空间</span>
+            <strong class="score-gap"></strong>
+          </div>
+          <div>
+            <span>学习优先级</span>
+            <strong class="priority-score"></strong>
+          </div>
+        </div>
+      </article>
+    </template>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
